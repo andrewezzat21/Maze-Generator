@@ -1,147 +1,157 @@
 class cell{
+  constructor(i, j, idx){
+    this.x = i;
+    this.y = j;
+    this.idx = idx;
+    this.path = [false, false, false, false];
+    this.pathHigh = [false, false, false, false];
+    this.visited = false;
+    this.pathVisited = false;
+    this.cellColorNotVisted = color(234, 234, 234);
+    this.cellColorVisted = color(72, 70, 109);
+    this.pathColor = color(242, 132, 130);
+    this.pathHighColor = color(2, 48, 71);
+    this.currColor = this.cellColorVisted;
+    this.parent = this;
+    this.pathCell = false;
+  }
   
+  
+  //show cells
+  Show(){
+    if(this.visited){
+        fill(this.cellColorVisted);
+    }
+    else{
+        fill(this.cellColorNotVisted);
+    }
+    noStroke();
+    circle(this.x * sz * 2, this.y * sz * 2, sz);
+  }
+  
+  //show path cells
+  pathCellShow(){
 
+    if(this.pathCell == true){
+        fill(this.cellColorVisted);
+        noStroke();
+        circle(this.x * sz * 2, this.y * sz * 2, sz);
+    }
+
+  }
   
-    constructor(i, j, idx){
-      this.x = i;
-      this.y = j;
-      this.idx = idx;
-      this.path = [false, false, false, false];
-      this.visited = false;
-      this.cellColorNotVisted = color(234, 234, 234);
-      this.cellColorVisted = color(72, 70, 109);
-      this.pathColor = color(242, 132, 130);
-      this.currColor = this.cellColorVisted;
+  //show paths
+  ShowPaths(){
+    if(this.path[0]){
+      this.dUp();
     }
-    
-    Show(){
-      if(this.visited){
-          fill(this.cellColorVisted);
-      }
-      else{
-          fill(this.cellColorNotVisted);
-      }
-      
-      noStroke();
-      circle(this.x * sz * 2, this.y * sz * 2, sz);
+    if(this.path[1]){
+      this.dRight();
     }
-    ShowPaths(){
-      if(this.path[0]){
-        this.dUp();
-      }
-      if(this.path[1]){
-        this.dRight();
-      }
-      if(this.path[2]){
-        this.dDown();
-      }
-      if(this.path[3]){
-        this.dLeft();
-      }
+    if(this.path[2]){
+      this.dDown();
     }
-    dUp(){
-      let cX = this.x * sz * 2;
-      let cY = this.y * sz * 2;
-      let h = sz / 4;
-      fill(this.pathColor);
-      rect(cX - h, cY - (sz*2), sz / 2 , sz * 2 + h);
+    if(this.path[3]){
+      this.dLeft();
     }
-    dRight(){
-      let cX = this.x * sz * 2;
-      let cY = this.y * sz * 2;
-      let h = sz / 4;
-      fill(this.pathColor);
-      rect(cX-h, cY-h, sz * 2, sz / 2);
-    }
-    dLeft(){
-      let cX = this.x * sz * 2;
-      let cY = this.y * sz * 2;
-      let h = sz / 4;
-      fill(this.pathColor);
-      rect(cX-(sz*2), cY-h, sz * 2 + h, sz / 2);
-    }
-    dDown(){
-      let cX = this.x * sz * 2;
-      let cY = this.y * sz * 2;
-      let h = sz / 4;
-      fill(this.pathColor);
-      rect(cX - h, cY, sz / 2 , sz * 2 + h);
-    }
-    getNeighbors(){
-      let n = [];
-      
-      
-      //top
-      if(valid(this.x, this.y-1)){
-          let i = getIndex(this.x, this.y-1);
-          if(!cells[i].visited){
-              n.push(cells[i]);
-          }
-      }
-      //right
-      if(valid(this.x+1, this.y)){
-          let i = getIndex(this.x+1, this.y);
-          if(!cells[i].visited){
-              n.push(cells[i]);
-          }
-      }
-      //down
-      if(valid(this.x, this.y+1)){
-          let i = getIndex(this.x, this.y+1);
-          if(!cells[i].visited){
-              n.push(cells[i]);
-          }
-      }
-      //left
-      if(valid(this.x-1, this.y)){
-          let i = getIndex(this.x-1, this.y);
-          if(!cells[i].visited){
-              n.push(cells[i]);
-          }
-      }    
-      if (n.length > 0) {
-        var idx = floor(random(0, n.length));
-        return n[idx];
-      } 
-      else {
-        return undefined;
-      }
-    }
-    Color(){
-      fill(this.currColor);
-      noStroke();
-      circle(this.x * sz * 2, this.y * sz * 2, sz);
-    }
-    
   }
-  function drawPath(a,b){
-    let x = a.x - b.x;
-    if(x == 1){
-      a.path[3] = true;
-      b.path[1] = true;
+  
+  //cell directions
+  dUp(){
+    let cX = this.x * sz * 2;
+    let cY = this.y * sz * 2;
+    let h = sz / 4;
+    if(this.pathHigh[0]){
+        fill(this.pathHighColor);
     }
-    else if(x == -1){
-      a.path[1] = true;
-      b.path[3] = true;
+    else{
+        fill(this.pathColor);
     }
+    rect(cX - h, cY - (sz*2), sz / 2 , sz * 2 + h);
+  }
+  dRight(){
+    let cX = this.x * sz * 2;
+    let cY = this.y * sz * 2;
+    let h = sz / 4;
+    if(this.pathHigh[1]){
+        fill(this.pathHighColor);
+    }
+    else{
+        fill(this.pathColor);
+    }
+    rect(cX-h, cY-h, sz * 2, sz / 2);
+  }
+  dLeft(){
+    let cX = this.x * sz * 2;
+    let cY = this.y * sz * 2;
+    let h = sz / 4;
+    if(this.pathHigh[3]){
+        fill(this.pathHighColor);
+    }
+    else{
+        fill(this.pathColor);
+    }
+    rect(cX-(sz*2), cY-h, sz * 2 + h, sz / 2);
+  }
+  dDown(){
+    let cX = this.x * sz * 2;
+    let cY = this.y * sz * 2;
+    let h = sz / 4;
+    if(this.pathHigh[2]){
+        fill(this.pathHighColor);
+    }
+    else{
+        fill(this.pathColor);
+    }
+    rect(cX - h, cY, sz / 2 , sz * 2 + h);
+  }
+  
+  //get cell neighbors
+  getNeighbors(){
+    let n = [];
     
-    let y = a.y - b.y;
-    if(y == 1){
-      b.path[4] = true;
-      a.path[0] = true;
+    //top
+    if(valid(this.x, this.y-1)){
+        let i = getIndex(this.x, this.y-1);
+        if(!cells[i].visited){
+            n.push(cells[i]);
+        }
     }
-    else if(y == -1){
-      b.path[0] = true;
-      a.path[4] = true;
+    //right
+    if(valid(this.x+1, this.y)){
+        let i = getIndex(this.x+1, this.y);
+        if(!cells[i].visited){
+            n.push(cells[i]);
+        }
     }
-    
-  }
-  function valid(x,y){
-    if(x > 0 && x <= width && y > 0 && y <= height ){
-      return true;
+    //down
+    if(valid(this.x, this.y+1)){
+        let i = getIndex(this.x, this.y+1);
+        if(!cells[i].visited){
+            n.push(cells[i]);
+        }
     }
-    return false;
+    //left
+    if(valid(this.x-1, this.y)){
+        let i = getIndex(this.x-1, this.y);
+        if(!cells[i].visited){
+            n.push(cells[i]);
+        }
+    }    
+    if (n.length > 0) {
+      var idx = floor(random(0, n.length));
+      return n[idx];
+    } 
+    else {
+      return undefined;
+    }
   }
-  function getIndex(x, y){
-    return (x + (y-1) * width)-1;
+  
+  // cell color
+  Color(){
+    fill(this.currColor);
+    noStroke();
+    circle(this.x * sz * 2, this.y * sz * 2, sz);
   }
+  
+}
